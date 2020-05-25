@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="libcxx">
+      <UniqueIdentifier>{6fc32a19-cba5-47c5-8966-cebcdd117dea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{cf6d381e-632f-46ba-9326-64f014fdf4b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="catch">
+      <UniqueIdentifier>{c3a59d6f-4c0f-4c1b-b1e1-89f5f0177b6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcxx\include">
+      <UniqueIdentifier>{f22f2d14-15f0-40b9-a85c-12548fb66451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcxx\src">
+      <UniqueIdentifier>{20e9b8cf-3f61-4745-a515-9ee076b3dc19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcxx\include\support">
+      <UniqueIdentifier>{b451bd39-17b0-4e6e-931c-c23e84f2db85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcxx\include\support\win32">
+      <UniqueIdentifier>{f7e04a7a-3b4b-4681-bb9e-70ee9feb4849}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcxx\src\support">
+      <UniqueIdentifier>{1622adcb-41c9-4d10-9370-ec6e28c553c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcxx\src\support\win32">
+      <UniqueIdentifier>{415f6d7f-c0a0-4d4f-a92f-01f915dd7eac}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="catch2\catch.hpp">
+      <Filter>catch</Filter>
+    </ClInclude>
+    <ClInclude Include="catch2\catch_reporter_automake.hpp">
+      <Filter>catch</Filter>
+    </ClInclude>
+    <ClInclude Include="catch2\catch_reporter_tap.hpp">
+      <Filter>catch</Filter>
+    </ClInclude>
+    <ClInclude Include="catch2\catch_reporter_teamcity.hpp">
+      <Filter>catch</Filter>
+    </ClInclude>
+    <ClInclude Include="libcxx\include\__config.h">
+      <Filter>libcxx\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libcxx\include\support\win32\support.h">
+      <Filter>libcxx\include\support\win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="catch.cc">
+      <Filter>catch</Filter>
+    </ClCompile>
+    <ClCompile Include="libcxx\src\support\win32\support.cpp">
+      <Filter>libcxx\src\support\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="test\catch__config_h.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\catch_cctype_h.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\catch_cerrno_h.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\catch_cfenv_h.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\catch_cfloat_h.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\catch_cinttypes_h.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\catch_climts_h.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\catch_csetjmp_h.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\catch_cstdint_h.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test\catch_win32_support_h.cc">
+      <Filter>test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="libcxx\include\cassert">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cctype">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cerrno">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cfenv">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cfloat">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\chrono">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cinttypes">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\climits">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\csetjmp">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\csignal">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cstdarg">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cstdbool">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cstddef">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cstdint">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cstdio">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cstdlib">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cstring">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\ctime">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cwchar">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\cwctype">
+      <Filter>libcxx\include</Filter>
+    </None>
+    <None Include="libcxx\include\type_traits">
+      <Filter>libcxx\include</Filter>
+    </None>
+  </ItemGroup>
+</Project>
