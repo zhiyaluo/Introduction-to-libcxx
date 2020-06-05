@@ -37,6 +37,7 @@
     <ClCompile Include="test\catch_climts_h.cc" />
     <ClCompile Include="test\catch_csetjmp_h.cc" />
     <ClCompile Include="test\catch_cstdint_h.cc" />
+    <ClCompile Include="test\catch_type_traits_h.cc" />
     <ClCompile Include="test\catch_win32_support_h.cc" />
     <ClCompile Include="test\catch__config_h.cc" />
   </ItemGroup>

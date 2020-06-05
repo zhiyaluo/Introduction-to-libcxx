@@ -177,6 +177,7 @@ _LIBCPP_CONSTEXPR const _Tp integral_constant<_Tp, __v>::value;
 typedef integral_constant<bool, true>  true_type;
 typedef integral_constant<bool, false> false_type;
 
+/*
 // is_const
 
 template <class _Tp> struct _LIBCPP_TYPE_VIS is_const            : public false_type {};
@@ -3062,6 +3063,8 @@ struct underlying_type
 };
 
 #endif // _LIBCXX_UNDERLYING_TYPE
+
+*/
 
 _LIBCPP_END_NAMESPACE_STD
 
