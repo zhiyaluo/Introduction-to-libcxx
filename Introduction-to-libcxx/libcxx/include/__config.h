@@ -468,6 +468,8 @@ using namespace _LIBCPP_NAMESPACE __attribute__((__strong__));
 #define _ALIGNAS(x) __declspec(align(x))
 //#define _LIBCPP_HAS_NO_VARIADICS
 
+#define _LIBCPP_HAS_NO_NULLPTR
+
 //#define _NOEXCEPT throw()
 //#define _NOEXCEPT_(x)
 #define _NOEXCEPT noexcept
