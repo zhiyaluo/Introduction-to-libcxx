@@ -106,9 +106,6 @@
     <None Include="libcxx\include\cfloat">
       <Filter>libcxx\include</Filter>
     </None>
-    <None Include="libcxx\include\chrono">
-      <Filter>libcxx\include</Filter>
-    </None>
     <None Include="libcxx\include\cinttypes">
       <Filter>libcxx\include</Filter>
     </None>

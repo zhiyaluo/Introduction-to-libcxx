@@ -149,10 +149,19 @@ namespace std
 
 _LIBCPP_BEGIN_NAMESPACE_STD
 
+
+// https://en.cppreference.com/w/cpp/types/conditional
+// Provides member typedef type, which is defined as T if B is true at compile time, or as F if B is false
+// _If if _Bp == true, _Then is _Bp == false
 template <bool _Bp, class _If, class _Then>
-    struct _LIBCPP_TYPE_VIS conditional {typedef _If type;};
+    struct _LIBCPP_TYPE_VIS conditional {typedef _If type;}; // primary template
 template <class _If, class _Then>
-    struct _LIBCPP_TYPE_VIS conditional<false, _If, _Then> {typedef _Then type;};
+    struct _LIBCPP_TYPE_VIS conditional<false, _If, _Then> {typedef _Then type;}; // explicit specialization for _Bp = false
+
+// Helper types since C++14
+template <bool _Bp, class _If, class _Then>
+using conditional_t = typename conditional<_Bp, _If, _Then>::type;
+
 
 template <bool, class _Tp = void> struct _LIBCPP_TYPE_VIS enable_if {};
 template <class _Tp> struct _LIBCPP_TYPE_VIS enable_if<true, _Tp> {typedef _Tp type;};

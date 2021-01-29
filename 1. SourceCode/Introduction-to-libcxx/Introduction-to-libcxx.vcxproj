@@ -47,7 +47,6 @@
     <None Include="libcxx\include\cerrno" />
     <None Include="libcxx\include\cfenv" />
     <None Include="libcxx\include\cfloat" />
-    <None Include="libcxx\include\chrono" />
     <None Include="libcxx\include\cinttypes" />
     <None Include="libcxx\include\climits" />
     <None Include="libcxx\include\csetjmp" />

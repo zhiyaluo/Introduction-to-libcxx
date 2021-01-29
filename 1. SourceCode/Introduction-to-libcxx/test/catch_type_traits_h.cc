@@ -2,7 +2,77 @@
 
 #include "libcxx/include/type_traits"
 
+// template basic:
+
+template<class T> inline void swap(T& a, T& b)
+{
+    T c = a;
+    a = b;
+    b = c;
+}
+
+template<class T>
+class Vector
+{
+    T* v = nullptr;
+    int sz = 0;
+
+public:
+    Vector() {}
+    explicit Vector(int sz) : sz(sz) { v = new T[sz]; }
+
+    T& elem(int i) { return v[i]; }
+    T& operator[](int i) { return v[i]; }
+
+    void push_back(T& x) { }
+
+    void swap(Vector& o) { swap(v, o.v); swap(sz, o.sz); }
+};
+
+template<class T> void swap(Vector<T>& a, Vector<T>& b)
+{
+    a.swap(b);
+}
+
+template<> class Vector<void*>
+{
+
+};
+
+template<class T> class Vector<T*> : private Vector<void*>
+{
+public:
+    typedef Vector<void*> Base;
+
+};
+
+template<class T> bool less(T a, T b) { return a < b; }
+
+// less<const char*> 可以不用写，在函数参数中自动推导
+// less<> 这个尖括号也不需要，前面template<>已经有了
+// less<const char*> --> less<> --> less
+template<> bool less(const char* a, const char* b)
+{
+    return strcmp(a, b) < 0;
+}
+
 // helper class:
+
+TEST_CASE("conditional", "[type_traits]") {
+	using namespace omega;
+
+    typedef conditional<(sizeof(int32_t) > sizeof(int64_t)), int32_t, int64_t>::type Type1;
+    typedef conditional<false, int32_t, int64_t>::type Type2;
+    typedef conditional<true, int32_t, int64_t>::type Type3;
+    typedef conditional_t<false, int32_t, int64_t> Type4;
+
+	REQUIRE(sizeof(Type1) == sizeof(int64_t));
+	REQUIRE(sizeof(Type2) == sizeof(int64_t));
+	REQUIRE(sizeof(Type3) == sizeof(int32_t));
+    REQUIRE(sizeof(Type4) == sizeof(int64_t));
+
+}
+
 TEST_CASE("integral_constant", "[type_traits]") {
     using namespace omega;
 
