@@ -1,4 +1,4 @@
-#include "catch2/catch.hpp"
+﻿#include "catch2/catch.hpp"
 
 #include "libcxx/include/type_traits"
 
@@ -16,17 +16,36 @@ class Vector
 {
     T* v = nullptr;
     int sz = 0;
+    int pos = 0;
+
+    void large_sz() {
+		int new_sz = sz;
+		if (new_sz == 0)  new_sz = 1;
+		else new_sz = sz * 2;
+        T* t = new T[new_sz];
+        memcpy(t, v, sizeof(T*) * sz);
+        delete[] v;
+        v = t;
+        sz = new_sz;
+    }
 
 public:
     Vector() {}
     explicit Vector(int sz) : sz(sz) { v = new T[sz]; }
+    virtual ~Vector() { delete[] v; }
 
     T& elem(int i) { return v[i]; }
-    T& operator[](int i) { return v[i]; }
+	T& operator[](int i) { return v[i]; }
 
-    void push_back(T& x) { }
+    void push_back(T& x) {
+        if (pos >= sz) large_sz();
+        v[pos] = x; pos++;
+    }
 
-    void swap(Vector& o) { swap(v, o.v); swap(sz, o.sz); }
+    int size() { return sz; }
+    int len() { return pos; }
+
+    void swap(Vector& o) { swap(v, o.v); swap(sz, o.sz); swap(pos, o.pos); }
 };
 
 template<class T> void swap(Vector<T>& a, Vector<T>& b)
@@ -34,27 +53,166 @@ template<class T> void swap(Vector<T>& a, Vector<T>& b)
     a.swap(b);
 }
 
+// 完全专门化
 template<> class Vector<void*>
 {
+    // 重新定义自己的成员变量
+    void** p = nullptr;
+    int sz = 0;
+    int pos = 0;
 
+	void large_sz() {
+        int new_sz = sz;
+        if (new_sz == 0)  new_sz = 1;
+        else new_sz = sz * 2;
+        void** t = new void*[new_sz];
+		memcpy(t, p, sizeof(void*) * sz);
+		delete[] p;
+        p = t;
+        sz = new_sz;
+	}
+
+public:
+    Vector() {}
+    Vector(int sz) : sz(sz) { p = new void*[sz]; }
+    virtual ~Vector() { delete[] p; }
+
+    void*& elem(int i) { return p[i]; }
+    void*& operator[] (int i) { return p[i]; }
+
+	void push_back(void*& x) {
+		if (pos >= sz) large_sz();
+		p[pos] = x; pos++;
+	}
+
+	int size() { return sz; }
+	int len() { return pos; }
+
+	void swap(Vector& o) {
+        ::swap(p, o.p); ::swap(sz, o.sz); ::swap(pos, o.pos);
+	}
 };
 
+// 部分专门化
+// 从非模板类派生模板类
 template<class T> class Vector<T*> : private Vector<void*>
 {
 public:
     typedef Vector<void*> Base;
 
+    Vector() : Base() {}
+    explicit Vector(int i) : Base(i) { }
+    virtual ~Vector() {}
+
+    T*& elem(int i) { return reinterpret_cast<T*&>(Base::elem(i)); }
+    T*& operator[] (int i) { return reinterpret_cast<T*&>(Base::operator[](i)); }
+
+    void push_back(T*& x) {
+        Base::push_back(reinterpret_cast<void*&>(x));
+    }
+
+    int size() { return Base::size(); }
+    int len() { return Base::len(); }
+
+    void swap(Vector& o) { Base::swap(o); }
 };
 
 template<class T> bool less(T a, T b) { return a < b; }
 
-// less<const char*> ���Բ���д���ں����������Զ��Ƶ�
-// less<> ���������Ҳ����Ҫ��ǰ��template<>�Ѿ�����
+// less<const char*> 可以不用写，在函数参数中自动推导
+// less<> 这个尖括号也不需要，前面template<>已经有了
 // less<const char*> --> less<> --> less
 template<> bool less(const char* a, const char* b)
 {
     return strcmp(a, b) < 0;
 }
+
+// 把容器的基本运算符定义在一个单独的模板类中
+// 方法 1 T-C分开
+template <class C> class Basic_ops {
+public:
+    bool operator==(const C& c) const {
+        if (derived().size() != c.size()) return false;
+        for (int i = 0; i < derived().size(); ++i) {
+            if (derived()[i] != c[i]) return false;
+        }
+        return true;
+    }
+
+    bool operator!= (const C& c) const {
+        return !operator==(c);
+    }
+
+    const C& derived() const { return static_cast<const C&>(*this); }
+};
+
+template<class T> class Math_container : public Basic_ops<Math_container<T>> {
+    T* v;
+    size_t sz;
+
+public:
+    size_t size() const {
+        return sz;
+    }
+    T& operator[] (size_t i) {
+        return v[i];
+    }
+    const T& operator[] (size_t i) const {
+        return v[i];
+    }
+};
+
+// 这些要添加前置声明
+template<class T, class C> class Mcontainer;
+template<class T, class C>
+bool operator==(const Mcontainer<T, C>& a, const Mcontainer<T, C>& b);
+template<class T, class C>
+bool operator!=(const Mcontainer<T, C>& a, const Mcontainer<T, C>& b);
+
+// 方法2 T-C合并一个类
+template<class T, class C> class Mcontainer {
+    C elements;
+
+public:
+	size_t size() const {
+		return elements.size();
+	}
+
+    T& operator[] (size_t i) { return elements[i]; }
+
+    // 模板中的friend function
+    friend bool operator==<>(const Mcontainer&, const Mcontainer&);
+    friend bool operator!=<>(const Mcontainer&, const Mcontainer&);
+};
+
+template<class T, class C>
+bool operator==(const Mcontainer<T, C>& a, const Mcontainer<T, C>& b)
+{
+    if (a.size() != b.size()) return false;
+    for (size_t i = 0; i < a.size(); ++i) {
+        if (a[i] != b[b]) return false;
+    }
+    return true;
+}
+
+template<class T, class C>
+bool operator!=(const Mcontainer<T, C>& a, const Mcontainer<T, C>& b)
+{
+    return !operator==(a, b);
+}
+
+template<typename T> class My_array {
+    T* v;
+    size_t sz;
+
+public:
+
+    size_t size() { return sz; }
+    T& operator[] (size_t i) { return v[i]; }
+};
+
+// double 相等的问题
+typedef Mcontainer<double, My_array<double>> MAC;
 
 // helper class:
 
@@ -71,6 +229,50 @@ TEST_CASE("conditional", "[type_traits]") {
 	REQUIRE(sizeof(Type3) == sizeof(int32_t));
     REQUIRE(sizeof(Type4) == sizeof(int64_t));
 
+    Vector<int*> vip;
+    int* ip = new int(123);
+    vip.push_back(ip);
+    int len = vip.len();
+    int size = vip.size();
+    REQUIRE(*vip[0] == 123);
+}
+
+struct T0 {
+	enum { int_t, float_t } type;
+
+    // template = int 等价于 template N = int，只是起一个类型推导匹配作用，并不需要实际类型
+    // 我们需要的是前面的 Integer
+	template <typename Integer,
+		      typename = omega::enable_if_t<omega::is_integral<Integer>::value>
+	>
+		T0(Integer) : type(int_t) {}
+
+	//template <typename Floating,
+	//	      typename = std::enable_if_t<std::is_floating_point<Floating>::value>
+	//>
+	//	T(Floating) : type(float_t) {} // error C2535: 'T::T(Integer)': member function already defined or declared
+};
+
+struct T1 {
+    enum { int_t, float_t } type;
+
+    template <typename Integer,
+              typename omega::enable_if_t <omega::is_integral<Integer>::value, bool> = true
+    >
+        T1(Integer) : type(int_t) {}
+
+	template <typename Floating,
+		typename omega::enable_if_t <omega::is_floating_point<Floating>::value, bool> = true
+	>
+		T1(Floating) : type(float_t) {}
+};
+
+TEST_CASE("enable_if", "[type_traits]") {
+    using namespace omega;
+
+    T0 t(1);
+    T1 t1(1);
+    T1 t1f(1.f);
 }
 
 TEST_CASE("integral_constant", "[type_traits]") {
@@ -226,6 +428,7 @@ TEST_CASE("is_union", "[type_traits]") {
     REQUIRE(is_union<int&&>::value == false);
     union U {};
     REQUIRE(is_union<U>::value == true);
+    //REQUIRE(__is_union<U> == true);
 }
 
 TEST_CASE("is_class", "[type_traits]") {

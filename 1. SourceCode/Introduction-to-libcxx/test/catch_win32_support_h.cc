@@ -144,7 +144,7 @@ TEST_CASE("__builtin_clz", "[support.h]")
 	unsigned int x = 1 << 31;
 	for (auto i = 0; i < 32; ++i)
 	{
-		REQUIRE(__builtin_clz(x >> i) == i);
+		REQUIRE(__builtin_clz(x >> i) == 31-i);
 	}
 	// 函数指针可以指向内联函数
 	auto p = __builtin_clz;

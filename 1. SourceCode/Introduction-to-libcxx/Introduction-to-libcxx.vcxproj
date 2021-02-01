@@ -23,6 +23,7 @@
     <ClInclude Include="catch2\catch_reporter_automake.hpp" />
     <ClInclude Include="catch2\catch_reporter_tap.hpp" />
     <ClInclude Include="catch2\catch_reporter_teamcity.hpp" />
+    <ClInclude Include="libcxx\include\support\win32\msvc_feature.h" />
     <ClInclude Include="libcxx\include\support\win32\support.h" />
     <ClInclude Include="libcxx\include\__config.h" />
   </ItemGroup>
@@ -141,6 +142,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

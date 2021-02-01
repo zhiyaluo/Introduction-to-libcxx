@@ -66,6 +66,8 @@ synopsis
 #ifndef _LIBCPP_CONFIG
 #define _LIBCPP_CONFIG
 
+//#include "support/win32/msvc_feature.h"
+
 #ifndef _MSC_VER // explicit macro necessary because it is only defined below in this file
 #pragma GCC system_header
 #endif
@@ -251,6 +253,8 @@ synopsis
 
 #pragma region "__clang__ || __GNUC___ || _MSC_VER"
 
+// _MSC_VER
+//  || defined(_MSC_VER)
 #if defined(__clang__)
 
 #if __has_feature(cxx_alignas)
@@ -566,9 +570,7 @@ template <unsigned> struct __static_assert_check {};
 #define _NOALIAS
 #endif
 
-/*
-*/
-// Fix: !!!经过测试不支持!!! 只是VS2019高亮错了，VS2019 已经支持 __has_feature 特性.
+// 自己实现 __has_feature
 #if (_MSC_VER >= 1900)
 #	define __has_feature(__x) 1
 #   define _LIBCPP_EXPLICIT explicit
@@ -576,7 +578,6 @@ template <unsigned> struct __static_assert_check {};
 #ifndef __has_feature
 #define __has_feature(__x) 0
 #endif
-
 #if __has_feature(cxx_explicit_conversions)
 #   define _LIBCPP_EXPLICIT explicit
 #else

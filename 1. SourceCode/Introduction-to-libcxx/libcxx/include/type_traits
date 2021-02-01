@@ -159,12 +159,18 @@ template <class _If, class _Then>
     struct _LIBCPP_TYPE_VIS conditional<false, _If, _Then> {typedef _Then type;}; // explicit specialization for _Bp = false
 
 // Helper types since C++14
+// C++14 添加了很多后缀是_t的类型推导
 template <bool _Bp, class _If, class _Then>
 using conditional_t = typename conditional<_Bp, _If, _Then>::type;
 
 
+// https://en.cppreference.com/w/cpp/types/enable_if
+// hides a function overload or template specialization based on compile-time boolean
 template <bool, class _Tp = void> struct _LIBCPP_TYPE_VIS enable_if {};
 template <class _Tp> struct _LIBCPP_TYPE_VIS enable_if<true, _Tp> {typedef _Tp type;};
+
+template <bool _Bp, class _Tp = void>
+using enable_if_t = typename enable_if<_Bp, _Tp>::type;
 
 struct __two {char __lx[2];};
 

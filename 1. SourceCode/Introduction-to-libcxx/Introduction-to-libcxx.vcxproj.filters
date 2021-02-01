@@ -48,6 +48,9 @@
     <ClInclude Include="libcxx\include\support\win32\support.h">
       <Filter>libcxx\include\support\win32</Filter>
     </ClInclude>
+    <ClInclude Include="libcxx\include\support\win32\msvc_feature.h">
+      <Filter>libcxx\include\support\win32</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="catch.cc">
