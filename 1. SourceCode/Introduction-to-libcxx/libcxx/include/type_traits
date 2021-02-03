@@ -165,6 +165,7 @@ using conditional_t = typename conditional<_Bp, _If, _Then>::type;
 
 
 // https://en.cppreference.com/w/cpp/types/enable_if
+// https://yixinglu.gitlab.io/enable_if.html
 // hides a function overload or template specialization based on compile-time boolean
 template <bool, class _Tp = void> struct _LIBCPP_TYPE_VIS enable_if {};
 template <class _Tp> struct _LIBCPP_TYPE_VIS enable_if<true, _Tp> {typedef _Tp type;};
@@ -172,23 +173,31 @@ template <class _Tp> struct _LIBCPP_TYPE_VIS enable_if<true, _Tp> {typedef _Tp t
 template <bool _Bp, class _Tp = void>
 using enable_if_t = typename enable_if<_Bp, _Tp>::type;
 
+// sizeof == 2
 struct __two {char __lx[2];};
 
 // helper class:
 
+//
 template <class _Tp, _Tp __v>
 struct _LIBCPP_TYPE_VIS integral_constant
 {
     static _LIBCPP_CONSTEXPR const _Tp      value = __v;
-    typedef _Tp               value_type;
-    typedef integral_constant type;
+    typedef _Tp               value_type;   // 抽象    value_type
+    typedef integral_constant type;         // 类本身  type
     _LIBCPP_INLINE_VISIBILITY
         _LIBCPP_CONSTEXPR operator value_type() const {return value;}
 };
 
+// static 成员变量，在类外面要定义
+// why
+// https://www.cnblogs.com/lixuejian/p/13215271.html
+// https://stackoverflow.com/questions/9656941/why-cant-i-initialize-non-const-static-member-or-static-array-in-class
+// C++中变量定义的唯一性
 template <class _Tp, _Tp __v>
 _LIBCPP_CONSTEXPR const _Tp integral_constant<_Tp, __v>::value;
 
+// 逻辑的层次感，抽象概念的层次感
 typedef integral_constant<bool, true>  true_type;
 typedef integral_constant<bool, false> false_type;
 
@@ -197,25 +206,40 @@ typedef integral_constant<bool, false> false_type;
 template <class _Tp> struct _LIBCPP_TYPE_VIS is_const            : public false_type {};
 template <class _Tp> struct _LIBCPP_TYPE_VIS is_const<_Tp const> : public true_type {};
 
+template<class T>
+inline _LIBCPP_CONSTEXPR bool is_const_v = is_const<T>::value;
+
 // is_volatile
 
 template <class _Tp> struct _LIBCPP_TYPE_VIS is_volatile               : public false_type {};
 template <class _Tp> struct _LIBCPP_TYPE_VIS is_volatile<_Tp volatile> : public true_type {};
+
+template<class T>
+inline _LIBCPP_CONSTEXPR bool is_volatile_v = is_volatile<T>::value;
 
 // remove_const
 
 template <class _Tp> struct _LIBCPP_TYPE_VIS remove_const            {typedef _Tp type;};
 template <class _Tp> struct _LIBCPP_TYPE_VIS remove_const<const _Tp> {typedef _Tp type;};
 
+template<class T>
+inline _LIBCPP_CONSTEXPR bool remove_const_v = remove_const<T>::value;
+
 // remove_volatile
 
 template <class _Tp> struct _LIBCPP_TYPE_VIS remove_volatile               {typedef _Tp type;};
 template <class _Tp> struct _LIBCPP_TYPE_VIS remove_volatile<volatile _Tp> {typedef _Tp type;};
 
+template<class T>
+inline _LIBCPP_CONSTEXPR bool remove_volatile_v = remove_volatile<T>::value;
+
 // remove_cv
 
 template <class _Tp> struct _LIBCPP_TYPE_VIS remove_cv
 {typedef typename remove_volatile<typename remove_const<_Tp>::type>::type type;};
+
+template<class T>
+inline _LIBCPP_CONSTEXPR bool remove_cv_v = remove_cv<T>::value;
 
 // is_void
 
@@ -225,6 +249,9 @@ template <>          struct __is_void<void> : public true_type {};
 template <class _Tp> struct _LIBCPP_TYPE_VIS is_void
     : public __is_void<typename remove_cv<_Tp>::type> {};
 
+template<class T>
+inline _LIBCPP_CONSTEXPR bool is_void_v = is_void<T>::value;
+
 // __is_nullptr_t
 
 template <class _Tp> struct ____is_nullptr_t       : public false_type {};
@@ -232,6 +259,9 @@ template <>          struct ____is_nullptr_t<nullptr_t> : public true_type {};
 
 template <class _Tp> struct _LIBCPP_TYPE_VIS __is_nullptr_t
     : public ____is_nullptr_t<typename remove_cv<_Tp>::type> {};
+
+template<class T>
+inline _LIBCPP_CONSTEXPR bool __is_nullptr_t_v = __is_nullptr_t<T>::value;
 
 // is_integral
 
@@ -257,6 +287,9 @@ template <>          struct __is_integral<unsigned long long> : public true_type
 template <class _Tp> struct _LIBCPP_TYPE_VIS is_integral
     : public __is_integral<typename remove_cv<_Tp>::type> {};
 
+template<class T>
+inline _LIBCPP_CONSTEXPR bool is_integral_v = is_integral<T>::value;
+
 // is_floating_point
 
 template <class _Tp> struct __is_floating_point              : public false_type {};
@@ -267,6 +300,9 @@ template <>          struct __is_floating_point<long double> : public true_type 
 template <class _Tp> struct _LIBCPP_TYPE_VIS is_floating_point
     : public __is_floating_point<typename remove_cv<_Tp>::type> {};
 
+template<class T>
+inline _LIBCPP_CONSTEXPR bool is_floating_point_v = is_floating_point<T>::value;
+
 // is_array
 
 template <class _Tp> struct _LIBCPP_TYPE_VIS is_array
@@ -276,6 +312,9 @@ template <class _Tp> struct _LIBCPP_TYPE_VIS is_array<_Tp[]>
 template <class _Tp, size_t _Np> struct _LIBCPP_TYPE_VIS is_array<_Tp[_Np]>
     : public true_type {};
 
+template<class T>
+inline _LIBCPP_CONSTEXPR bool is_array_v = is_array<T>::value;
+
 // is_pointer
 
 template <class _Tp> struct __is_pointer       : public false_type {};
@@ -283,6 +322,9 @@ template <class _Tp> struct __is_pointer<_Tp*> : public true_type {};
 
 template <class _Tp> struct _LIBCPP_TYPE_VIS is_pointer
     : public __is_pointer<typename remove_cv<_Tp>::type> {};
+
+template<class T>
+inline _LIBCPP_CONSTEXPR bool is_pointer_v = is_pointer<T>::value;
 
 // is_reference
 

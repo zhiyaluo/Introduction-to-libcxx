@@ -2,6 +2,7 @@
 
 // https://github.com/alespergl/cpp_feature/blob/master/include/feature-msvc.hpp
 // https://docs.microsoft.com/en-us/cpp/extensions/compiler-support-for-type-traits-cpp-component-extensions?redirectedfrom=MSDN&view=msvc-160
+// https://zhuanlan.zhihu.com/p/99500735
 
 #define __cpp_aggregate_nsdmi               (_MSC_VER >= 1910 ? 201304 : 0)
 #if !   __cpp_aggregate_nsdmi

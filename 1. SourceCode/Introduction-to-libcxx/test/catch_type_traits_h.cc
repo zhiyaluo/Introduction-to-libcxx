@@ -267,12 +267,103 @@ struct T1 {
 		T1(Floating) : type(float_t) {}
 };
 
-TEST_CASE("enable_if", "[type_traits]") {
-    using namespace omega;
+TEST_CASE("enable_if 1", "[type_traits]") {
+	using namespace omega;
 
-    T0 t(1);
-    T1 t1(1);
-    T1 t1f(1.f);
+	T0 t(1);
+	T1 t1(1);
+	T1 t1f(1.f);
+}
+
+// enable_if
+// 1 类型偏特化
+template <typename T, typename Enable = void>
+struct check;
+
+// 只有当T包含一个value，且value为true才会编译通过
+template <typename T>
+struct check<T, typename omega::enable_if_t<T::value>> {
+	static _LIBCPP_CONSTEXPR bool value = T::value; //并不是需要value的值，而是利用check来实现类型过滤
+};
+
+struct ContainFalse
+{
+	static constexpr bool value = false;
+};
+
+struct ContainTrue
+{
+    static constexpr bool value = true;
+};
+
+TEST_CASE("enable_if 2", "[type_traits]") {
+	using namespace omega;
+
+    //using CK = check<int>;
+    //CK ck;
+
+    //using CK2 = check<ContainFalse>;
+    //CK2 ck2;
+
+	using CK3 = check<ContainTrue>;
+	CK3 ck2;
+}
+
+// 2 控制函数返回类型
+// TODO 等后面tuple一起实现
+// a 不定模板参数，不定模板类
+// b tuple原理
+// https://www.cnblogs.com/qicosmos/p/4325949.html
+
+/*
+template <size_t k, class T, class... Ts>
+struct element_type_holder {
+	typedef T type;
+};
+
+// Tuple<int, int, float> tp(1,2,3.1);
+template <class T, class... Ts>
+struct Tuple {
+	Ts tail;
+};
+
+template <size_t k, class T, class... Ts>
+typename omega::enable_if_t<k == 0, typename element_type_holder<0, T, Ts...>::type&>
+get(Tuple<T, Ts...>& t) {
+	return t.tail;
+}
+
+template <size_t k, class T, class... Ts>
+typename omega::enable_if_t<k != 0, typename element_type_holder<k, T, Ts...>::type&>
+get(Tuple<T, Ts...>& t) {
+	Tuple<Ts...>& base = t;
+	return get<k - 1, T, Ts...>(base);
+}
+
+TEST_CASE("enable_if 3", "[type_traits]") {
+    using namespace omega;
+}
+*/
+
+// enable_if 3 校验函数模板参数类型
+// 1 匹配成功，获取value/type
+// 2 匹配失败，无定义，编译不通过，或者选择另外一个
+template<typename T>
+typename omega::enable_if_t<omega::is_integral<T>::value, bool>
+is_odd(T t) {
+    return bool(t % 2);
+}
+
+template<typename T, typename = typename omega::enable_if_t<omega::is_integral<T>::value>>
+bool is_even(T t) {
+    return !is_odd(t);
+}
+
+TEST_CASE("enable_if 4", "[type_traits]") {
+	using namespace omega;
+
+    bool o = is_odd(1);
+    bool e = is_even(2);
 }
 
 TEST_CASE("integral_constant", "[type_traits]") {
@@ -385,6 +476,7 @@ TEST_CASE("is_array", "[type_traits]") {
     //int x;
     //REQUIRE(is_array<float[x]>::value == true);
     REQUIRE(is_array<int>::value == false);
+    REQUIRE(is_array<int*>::value == false);
 }
 
 TEST_CASE("is_pointer", "[type_traits]") {
