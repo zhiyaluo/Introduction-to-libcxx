@@ -513,14 +513,17 @@ TEST_CASE("is_reference", "[type_traits]") {
 }
 
 TEST_CASE("is_union", "[type_traits]") {
-    using namespace omega;
-
     //REQUIRE(is_union<float[]>::value == false);
     //REQUIRE(is_union<int&>::value == true);
-    REQUIRE(is_union<int&&>::value == false);
+    REQUIRE(omega::is_union<int&&>::value == false);
     union U {};
-    REQUIRE(is_union<U>::value == true);
-    //REQUIRE(__is_union<U> == true);
+    // 这里判断有问题，不能这么写
+    // 单独的把is_union放出来到单独的工程是行不通的
+    REQUIRE(omega::is_union<U>::value == true);
+    class C {};
+	REQUIRE(omega::is_union<C>::value == false);
+    //REQUIRE(__is_union(C) == true);
+    //REQUIRE(__is_union(U) == false);
 }
 
 TEST_CASE("is_class", "[type_traits]") {
